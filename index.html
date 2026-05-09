@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bank Exam Quiz</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+}
+
+#timer{
+    position:sticky;
+    top:0;
+    background:#222;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+    border-radius:10px;
+    margin-bottom:20px;
+    z-index:100;
+}
+
+.question{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.question h3{
+    margin-bottom:15px;
+}
+
+.option{
+    display:block;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#f0f0f0;
+}
+
+.selected{
+    background:#cfe2ff;
+    border:2px solid #0d6efd;
+}
+
+.mark-btn{
+    margin-top:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#ff9800;
+    color:white;
+}
+
+.marked{
+    background:#ffcc80 !important;
+}
+
+.review-marked{
+    background:#e0e0e0 !important;
+    border:2px solid #9e9e9e;
+}
+
+.clear-btn{
+    margin-top:10px;
+    margin-left:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#dc3545;
+    color:white;
+}
+
+.clear-btn:hover{
+    background:#c82333;
+}
+
+.submit-btn{
+    width:100%;
+    padding:15px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    background:#28a745;
+    color:white;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+.submit-btn:hover{
+    background:#218838;
+}
+
+.result-box{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.review-btn{
+    padding:12px 20px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    background:#007bff;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.review-question{
+    background:white;
+    padding:20px;
+    margin:20px 0;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.correct{
+    color:green;
+    font-weight:bold;
+}
+
+.wrong{
+    color:red;
+    font-weight:bold;
+}
+
+.unanswered{
+    color:orange;
+    font-weight:bold;
+}
+
+.correct-answer{
+    background:#d4edda;
+    padding:10px;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Bank Exam MCQ Quiz</h1>
+
+<div id="timer">Time Left: 15:00</div>
+
+<div id="quiz"></div>
+
+<button class="submit-btn" onclick="submitQuiz()">
+Submit Quiz
+</button>
+
+</div>
+
+<script>
+
+// ===============================
+// QUESTIONS AREA
+// ===============================
+
+const questions = [
+
+
+{q:"The Union Cabinet chaired by Prime Minister Narendra Modi approved two semiconductor manufacturing projects worth around Rs.3,936 crore under which flagship mission aimed at developing India’s semiconductor and display manufacturing ecosystem in India?", options:["Digital India Electronics Mission (DIEM)","India Semiconductor Mission (ISM)","National Display Fabrication Scheme (NDFS)","Semiconductor Technology Advancement Programme (STAP)"], answer:1},
+
+{q:"Crystal Matrix Limited (CML), approved under the India Semiconductor Mission (ISM), will establish its Mini/Micro-LED display manufacturing facility in which location of Gujarat?", options:["Surat","Rajkot","Dholera","Vadodara"], answer:2},
+
+{q:"The semiconductor packaging unit approved for Suchi Semicon Private Limited (SSPL) under the India Semiconductor Mission (ISM) will be established in which city of Gujarat?", options:["Ahmedabad","Surat","Jamnagar","Bhavnagar"], answer:1},
+
+{q:"The Mini/Micro-LED display facility proposed by Crystal Matrix Limited (CML) under the India Semiconductor Mission (ISM) will have a production capacity of:", options:["52,000 sq m of LED panels","60,000 sq m of LED panels","72,000 sq m of Mini/Micro-LED panels","90,000 sq m of semiconductor panels"], answer:2},
+
+{q:"Suchi Semicon Private Limited (SSPL) will establish a semiconductor packaging unit in Gujarat with an annual production capacity of approximately:", options:["850 million chips","950 million chips","1033.20 million chips","1200 million chips"], answer:2},
+
+{q:"The Emergency Credit Line Guarantee Scheme (ECLGS) 5.0 approved by the Union Cabinet carries a total outlay of:", options:["Rs.12,500 crore","Rs.15,250 crore","Rs.18,100 crore","Rs.21,000 crore"], answer:2},
+
+{q:"ECLGS 5.0 was mainly approved to help Micro, Small and Medium Enterprises (MSMEs) facing short-term liquidity stress arising due to which crisis?", options:["Russia–Ukraine conflict","Indo-Pacific supply chain disruption","Crisis in West Asia","Global semiconductor shortage"], answer:2},
+
+{q:"Which organisation administers the Emergency Credit Line Guarantee Scheme (ECLGS) 5.0 approved by the Union Cabinet?", options:["SIDBI","NABARD","National Credit Guarantee Trustee Company Limited (NCGTC)","EXIM Bank"], answer:2},
+
+{q:"National Credit Guarantee Trustee Company Limited (NCGTC), associated with the implementation of ECLGS, was established in:", options:["2012","2013","2014","2015"], answer:2},
+
+{q:"Cabinet Committee on Economic Affairs (CCEA) approved a ship repair facility project worth Rs.1,570 crore at Vadinar in Gujarat in partnership between Deendayal Port Authority (DPA) and:", options:["Hindustan Shipyard Limited (HSL)","Cochin Shipyard Limited (CSL)","Mazagon Dock Shipbuilders Limited (MDL)","Garden Reach Shipbuilders & Engineers (GRSE)"], answer:1},
+
+{q:"Which among the following railway projects was included in the multi-tracking proposals approved by the Cabinet Committee on Economic Affairs (CCEA)?", options:["Chennai–Bengaluru 3rd Line","Nagda–Mathura 3rd and 4th Line","Mumbai–Pune Freight Corridor","Delhi–Amritsar High-Speed Corridor"], answer:1},
+
+{q:"The Union Government approved an increase in the sanctioned strength of judges in the Supreme Court of India (SCI) from 33 to:", options:["35","36","37","40"], answer:2},
+
+{q:"As per the Ministry of Finance (MoF), Scheduled Commercial Banks (SCBs) recorded what percentage of year-on-year growth in non-food credit during FY26?", options:["10.4%","12.8%","15.9%","18.4%"], answer:2},
+
+{q:"According to the Ministry of Finance (MoF), which sector recorded the highest credit growth among Scheduled Commercial Banks (SCBs) during FY26?", options:["Agriculture and Allied Activities","Industrial Sector","Services Sector","Infrastructure Sector"], answer:2},
+
+{q:"The Ministry of Defence (MoD) signed a Rs.1,476 crore contract with Bharat Electronics Limited (BEL) for procurement of which system for the Indian Army (IA)?", options:["Missile Guidance Radar Systems","Ground-Based Mobile Electronic Systems (GBMES)","Naval Electronic Surveillance Drones","Tactical Communication Satellites"], answer:1},
+
+{q:"The procurement contract signed between the Ministry of Defence (MoD) and Bharat Electronics Limited (BEL) for GBMES was under which procurement category?", options:["Buy Global","Buy and Make","Buy Indian–IDDM","Strategic Partnership Model"], answer:2},
+
+{q:"NITI Aayog launched which portal to improve real-time governance and strengthen last-mile service delivery across India?", options:["Bharat Governance Interface (BGI)","Central Monitoring Portal (CMP)","Central Prabhari Officer (CPO) Portal","National Service Delivery Dashboard (NSDD)"], answer:2},
+
+{q:"External Affairs Minister (EAM) Dr. S. Jaishankar undertook his first-ever bilateral visit to which Caribbean nation during May 2026?", options:["Cuba","Jamaica","Barbados","Trinidad and Tobago"], answer:1},
+
+{q:"According to the World Migration Report 2026 released by International Organization for Migration (IOM), India remained the world’s top remittance recipient country in 2024 with inflows exceeding:", options:["USD 90 billion","USD 100 billion","USD 137 billion","USD 150 billion"], answer:2},
+
+{q:"Nagaland launched the ‘100 Days Ayushman Student Coverage Mission’ mainly to expand which flagship health insurance scheme among students?", options:["PM-KISAN","PMJDY","AB-PMJAY","PM SVANidhi"], answer:2},
+
+{q:"The Cabinet Committee on Economic Affairs (CCEA) approved the Fair and Remunerative Price (FRP) for sugarcane for the 2026–27 season at Rs.365 per quintal linked to which basic sugar recovery rate?", options:["9.75%","10.00%","10.25%","10.50%"], answer:2},
+
+{q:"The revised Fair and Remunerative Price (FRP) for sugarcane for the 2026–27 season became effective from which date?", options:["July 1, 2026","August 1, 2026","September 1, 2026","October 1, 2026"], answer:3},
+
+{q:"The “5F Vision” associated with the Mission for Cotton Productivity approved by the Union Cabinet stands for:", options:["Farm to Fibre to Factory to Fashion to Foreign","Farm to Fabric to Finance to Freight to Foreign","Fibre to Factory to Fashion to Finance to Foreign","Farm to Factory to Fabric to Franchise to Foreign"], answer:0},
+
+{q:"India and the European Union (EU) launched a EUR 15.2 million initiative under the Trade and Technology Council (TTC) Working Group 2 mainly related to:", options:["Semiconductor chip fabrication","Recycling of Electric Vehicle (EV) batteries","Solar panel exports","Green hydrogen storage systems"], answer:1},
+
+{q:"The India-European Union Trade and Technology Council (TTC), under which the EV battery recycling initiative was launched, was established in which year?", options:["2019","2020","2021","2022"], answer:2},
+
+{q:"India’s first Urban Testbed and Aerosol Observatory established in Chennai by IITM Pune operates under which ministry?", options:["Ministry of Science and Technology","Ministry of Environment, Forest and Climate Change","Ministry of Earth Sciences","Ministry of Housing and Urban Affairs"], answer:2},
+
+{q:"The Urban Testbed and Aerosol Observatory established in Chennai aims to improve all of the following except:", options:["Monsoon prediction","Urban flood forecasting","Severe weather nowcasting","Deep sea mineral mapping"], answer:3},
+
+{q:"The agreements signed between India and Japan in New Delhi focused primarily on cooperation in:", options:["Space exploration and defence production","Quantum technology and health research","Semiconductor fabrication and agriculture","Renewable energy and cyber security"], answer:1},
+
+{q:"During the India–Japan agreements on quantum cooperation and health research, India was represented by which Union Minister of State?", options:["Rajeev Chandrasekhar","Dharmendra Pradhan","Jitendra Singh","Piyush Goyal"], answer:2},
+
+{q:"The Swasth Bharat Portal launched by the Ministry of Health and Family Welfare (MoHFW) is mainly intended to:", options:["Replace Ayushman Bharat Digital Mission","Create a national disease surveillance network","Integrate fragmented health programme systems into a unified digital platform","Monitor pharmaceutical exports digitally"], answer:2},
+
+{q:"Canada’s Cape Breton University (CBU) signed a five-year collaboration agreement with which Indian university to promote student and faculty exchange programmes?", options:["Ashoka University","BML Munjal University","Shiv Nadar University","O.P. Jindal Global University"], answer:1},
+
+{q:"Viability Plan 2.0 approved by the Department of Financial Services (DFS) for Regional Rural Banks (RRBs) is based on how many performance parameters?", options:["20","25","30","40"], answer:2},
+
+{q:"Which among the following is NOT one of the four focus pillars of Viability Plan 2.0 for Regional Rural Banks (RRBs)?", options:["Operational excellence","Asset quality","Profitability","Export competitiveness"], answer:3},
+
+{q:"India’s first green methanol production plant using Prosopis juliflora shrub as feedstock is being established at which port authority?", options:["Paradip Port Authority","Jawaharlal Nehru Port Authority","Deendayal Port Authority","Visakhapatnam Port Authority"], answer:2},
+
+{q:"The Securities and Exchange Board of India (SEBI) constituted the ‘Cyber-suraksha.ai’ task force mainly to address risks associated with:", options:["Quantum computing frauds","AI-driven cybersecurity threats","Cryptocurrency trading platforms","Cross-border digital taxation"], answer:1},
+
+{q:"Skyroot Aerospace became India’s first space-tech unicorn after raising approximately how much funding in its latest round?", options:["USD 25 million","USD 40 million","USD 60 million","USD 90 million"], answer:2},
+
+{q:"IIT Madras Global Research Foundation launched its first international centre in which city of the United States of America (USA)?", options:["Boston","Austin","Menlo Park","Seattle"], answer:2},
+
+{q:"Robert Edward Turner III, who recently passed away, was popularly known by which name?", options:["Larry Page","Ted Turner","Rupert Murdoch","Michael Bloomberg"], answer:1},
+
+{q:"The 2026 theme of World Asthma Day (WAD) observed on the first Tuesday of May was:", options:["Healthy Breathing for All","Access to anti-inflammatory inhalers for everyone with asthma, still an urgent need","Asthma Awareness Beyond Borders","Lung Care for a Better Tomorrow"], answer:1},
+
+{q:"International No Diet Day (INDD), observed annually on May 6 to promote body positivity and self-love, was founded in 1992 by:", options:["Naomi Wolf","Gloria Steinem","Mary Evans Young","Germaine Greer"], answer:2},
+
+];
+
+// ===============================
+// VARIABLES
+// ===============================
+
+let userAnswers = new Array(questions.length).fill(null);
+
+let markedForReview = new Array(questions.length).fill(false);
+
+let submitted = false;
+
+// ===============================
+// LOAD QUIZ
+// ===============================
+
+function loadQuiz(){
+
+    const quizDiv = document.getElementById("quiz");
+
+    questions.forEach((question,index)=>{
+
+        const qDiv = document.createElement("div");
+
+        qDiv.classList.add("question");
+
+        qDiv.id = `question_${index}`;
+
+        qDiv.innerHTML = `
+        <h3>Q${index+1}. ${question.q}</h3>
+        `;
+
+        question.options.forEach((option,optIndex)=>{
+
+            const opt = document.createElement("div");
+
+            opt.classList.add("option");
+
+            opt.innerText = option;
+
+            opt.onclick = ()=>selectOption(index,optIndex,opt);
+
+            opt.id = `q${index}_opt${optIndex}`;
+
+            qDiv.appendChild(opt);
+
+        });
+
+        // Mark Button
+
+        const markBtn = document.createElement("button");
+
+        markBtn.innerText = "Mark For Review";
+
+        markBtn.classList.add("mark-btn");
+
+        markBtn.onclick = ()=>toggleMark(index,markBtn);
+
+        qDiv.appendChild(markBtn);
+
+        // Clear Button
+
+        const clearBtn = document.createElement("button");
+
+        clearBtn.innerText = "Clear";
+
+        clearBtn.classList.add("clear-btn");
+
+        clearBtn.onclick = ()=>clearAnswer(index);
+
+        qDiv.appendChild(clearBtn);
+
+        quizDiv.appendChild(qDiv);
+
+    });
+
+}
+
+// ===============================
+// SELECT OPTION
+// ===============================
+
+function selectOption(qIndex,optIndex,element){
+
+    if(submitted) return;
+
+    userAnswers[qIndex] = optIndex;
+
+    const options = document.querySelectorAll(`[id^="q${qIndex}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+    element.classList.add("selected");
+
+}
+
+// ===============================
+// MARK FOR REVIEW
+// ===============================
+
+function toggleMark(index,button){
+
+    markedForReview[index] = !markedForReview[index];
+
+    const questionBox = document.getElementById(`question_${index}`);
+
+    if(markedForReview[index]){
+
+        button.classList.add("marked");
+
+        button.innerText = "Marked For Review";
+
+        questionBox.classList.add("review-marked");
+
+    }else{
+
+        button.classList.remove("marked");
+
+        button.innerText = "Mark For Review";
+
+        questionBox.classList.remove("review-marked");
+
+    }
+
+}
+
+// ===============================
+// CLEAR ANSWER
+// ===============================
+
+function clearAnswer(index){
+
+    if(submitted) return;
+
+    userAnswers[index] = null;
+
+    const options = document.querySelectorAll(`[id^="q${index}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+}
+
+// ===============================
+// SUBMIT QUIZ
+// ===============================
+
+function submitQuiz(){
+
+    if(submitted) return;
+
+    submitted = true;
+
+    clearInterval(timer);
+
+    let score = 0;
+
+    let correctCount = 0;
+    let wrongCount = 0;
+    let unansweredCount = 0;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        if(userAns === null){
+
+            unansweredCount++;
+
+        }
+        else if(userAns === question.answer){
+
+            score += 1;
+            correctCount++;
+
+        }
+        else{
+
+            score -= 0.25;
+            wrongCount++;
+
+        }
+
+    });
+
+    let attempted = correctCount + wrongCount;
+
+    let accuracy = attempted > 0
+    ? ((correctCount/attempted)*100).toFixed(2)
+    : 0;
+
+    document.body.innerHTML = `
+
+    <div class="container">
+
+        <div class="result-box">
+
+            <h1>Quiz Submitted ✅</h1>
+
+            <h2>Total Score: ${score.toFixed(2)}</h2>
+
+            <h3>Correct Answers: ${correctCount}</h3>
+
+            <h3>Wrong Answers: ${wrongCount}</h3>
+
+            <h3>Unanswered Questions: ${unansweredCount}</h3>
+
+            <h3>Accuracy: ${accuracy}%</h3>
+
+            <button class="review-btn" onclick="reviewAnswers()">
+            Review Answers
+            </button>
+
+            <div id="reviewSection"></div>
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+// ===============================
+// REVIEW ANSWERS
+// ===============================
+
+function reviewAnswers(){
+
+    const reviewSection = document.getElementById("reviewSection");
+
+    let html = `<h1 style="margin-top:40px;">Review Section</h1>`;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        let status = "";
+        let marks = "";
+
+        if(userAns === null){
+
+            status = `<span class="unanswered">Unanswered</span>`;
+            marks = `0 Marks`;
+
+        }
+        else if(userAns === question.answer){
+
+            status = `<span class="correct">Correct ✅</span>`;
+            marks = `+1 Mark`;
+
+        }
+        else{
+
+            status = `<span class="wrong">Wrong ❌</span>`;
+            marks = `-0.25 Mark`;
+
+        }
+
+        html += `
+
+        <div class="review-question">
+
+            <h3>Q${index+1}. ${question.q}</h3>
+
+            <p>${status}</p>
+
+            <p><b>Marks:</b> ${marks}</p>
+
+            <p>
+            <b>Your Answer:</b>
+            ${
+                userAns === null
+                ? "Not Attempted"
+                : question.options[userAns]
+            }
+            </p>
+
+            <div class="correct-answer">
+            <b>Correct Answer:</b>
+            ${question.options[question.answer]}
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+    reviewSection.innerHTML = html;
+
+}
+
+// ===============================
+// TIMER
+// ===============================
+
+let time = 900;
+
+const timer = setInterval(()=>{
+
+    let minutes = Math.floor(time/60);
+
+    let seconds = time%60;
+
+    document.getElementById("timer").innerText =
+    `Time Left: ${minutes}:${seconds<10 ? '0'+seconds : seconds}`;
+
+    time--;
+
+    if(time < 0){
+
+        clearInterval(timer);
+
+        alert("Time is up! Quiz auto-submitted.");
+
+        submitQuiz();
+
+    }
+
+},1000);
+
+// ===============================
+
+loadQuiz();
+
+</script>
+
+</body>
+</html>
